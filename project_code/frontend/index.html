@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>银龄小助手 - MVP Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        :root {
+            --primary: #2196f3;
+            --bg: #f5f7fa;
+            --glass: rgba(255, 255, 255, 0.85);
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            color: #1a237e;
+            font-size: 48px;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        #chat-window {
+            height: 400px;
+            overflow-y: auto;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            margin: 20px 0;
+            padding: 20px 25px;
+            border-radius: 25px;
+            line-height: 1.6;
+            font-size: 26px;
+            /* 适老化大字号 */
+            max-width: 85%;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ai {
+            background: white;
+            color: #1a237e;
+            align-self: flex-start;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.1);
+            border-bottom-left-radius: 5px;
+        }
+
+        .user {
+            background: #2196f3;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .input-area {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 25px;
+            font-size: 26px;
+            border: 3px solid #dee2e6;
+            border-radius: 20px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .suggestion-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            background: #fff;
+            color: #1e88e5;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 20px;
+            cursor: pointer;
+            border: 2px solid #e3f2fd;
+            transition: all 0.2s;
+        }
+
+        .tag:hover {
+            background: #e3f2fd;
+            transform: scale(1.05);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .send-btn {
+            background: #1a237e;
+            color: white;
+            padding: 20px 50px;
+            font-size: 28px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(26, 35, 126, 0.3);
+        }
+
+        .mic-btn {
+            background: #ff5252;
+            width: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 28px;
+        }
+
+        .mic-btn.recording {
+            background: #d32f2f;
+            animation: none;
+            box-shadow: 0 0 0 8px rgba(211, 47, 47, 0.3);
+        }
+
+        .mic-btn:disabled {
+            background: #bdbdbd;
+            cursor: not-allowed;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(255, 82, 82, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 82, 82, 0);
+            }
+        }
+
+        .loading {
+            color: #5c6bc0;
+            font-size: 20px;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>👴 银龄小助手 (旗舰版)</h1>
+
+        <div id="chat-window">
+            <div class="message ai">老人家您好！我是您的生活管家小张。有什么我能帮您的吗？</div>
+            <div class="message ai">您可以直接打字，或者点下面的按钮问我哦：</div>
+        </div>
+
+        <div class="suggestion-box" id="suggestions">
+            <div class="tag" onclick="useTag('长护险怎么申请？')">📄 申请长护险</div>
+            <div class="tag" onclick="useTag('附近有养老助餐点吗？')">🍱 找助餐点</div>
+            <div class="tag" onclick="useTag('如何预防高血压？')">🍎 健康建议</div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="请点这里说话..." onkeypress="handleKeyPress(event)">
+            <div class="btn-group">
+                <button class="send-btn" onclick="sendMessage()">点我发送</button>
+                <button class="mic-btn" id="mic-btn" onclick="toggleVoiceInput()">🎤</button>
+            </div>
+            <div id="status" class="loading" style="display:none;">小张正在为您查询政策，请稍候...</div>
+        </div>
+    </div>
+
+    <script>
+        const chatWindow = document.getElementById('chat-window');
+        const userInput = document.getElementById('user-input');
+        const statusDiv = document.getElementById('status');
+        const suggestionsBox = document.getElementById('suggestions');
+
+        // v2.1: 生成唯一的 Session ID，避免用户历史混淆
+        function getSessionId() {
+            let sessionId = localStorage.getItem('silver_session_id');
+            if (!sessionId) {
+                sessionId = 'user_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+                localStorage.setItem('silver_session_id', sessionId);
+            }
+            return sessionId;
+        }
+        const SESSION_ID = getSessionId();
+
+        function useTag(text) {
+            userInput.value = text;
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            userInput.value = '';
+            statusDiv.style.display = 'block';
+
+            try {
+                const response = await axios.post('http://localhost:8001/chat', {
+                    message: message,
+                    user_id: SESSION_ID  // v2.1: 使用唯一 Session ID
+                });
+
+                statusDiv.style.display = 'none';
+                // v2.0 优化: 打字机效果
+                await typeMessage(response.data.response, 'ai');
+
+                // v2.0 优化: 动态更新建议标签
+                if (response.data.suggestions && response.data.suggestions.length > 0) {
+                    updateSuggestions(response.data.suggestions);
+                }
+            } catch (error) {
+                statusDiv.style.display = 'none';
+                addMessage("老人家对不起，实验室的‘大脑’后台还没接通（API Key未配置），所以我现在只能给您演示样子。等正式版本上线，我肯定能对答如流！", 'ai');
+            }
+        }
+
+        function addMessage(text, type) {
+            const div = document.createElement('div');
+            div.className = `message ${type}`;
+            div.innerText = text;
+            chatWindow.appendChild(div);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') sendMessage();
+        }
+
+        // v2.0: 打字机效果函数
+        async function typeMessage(text, type) {
+            const div = document.createElement('div');
+            div.className = `message ${type}`;
+            chatWindow.appendChild(div);
+
+            for (let i = 0; i < text.length; i++) {
+                div.innerText = text.substring(0, i + 1);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, 25));
+            }
+        }
+
+        // v2.0: 动态更新建议标签
+        function updateSuggestions(suggestions) {
+            suggestionsBox.innerHTML = '';
+            suggestions.forEach(sug => {
+                const tag = document.createElement('div');
+                tag.className = 'tag';
+                tag.innerText = sug;
+                tag.onclick = () => useTag(sug);
+                suggestionsBox.appendChild(tag);
+            });
+        }
+
+        // ========== v3.0: Web Speech API 语音输入 ==========
+        const micBtn = document.getElementById('mic-btn');
+        let recognition = null;
+        let isRecording = false;
+
+        // 检查浏览器支持
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.lang = 'zh-CN';  // 中文普通话
+
+            recognition.onstart = function () {
+                isRecording = true;
+                micBtn.classList.add('recording');
+                micBtn.innerText = '🔴';
+                userInput.placeholder = '正在聆听您说话...';
+            };
+
+            recognition.onresult = function (event) {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                userInput.value = transcript;
+            };
+
+            recognition.onend = function () {
+                isRecording = false;
+                micBtn.classList.remove('recording');
+                micBtn.innerText = '🎤';
+                userInput.placeholder = '请点这里说话...';
+
+                // 自动发送 (如果有内容)
+                if (userInput.value.trim()) {
+                    sendMessage();
+                }
+            };
+
+            recognition.onerror = function (event) {
+                console.error('语音识别错误:', event.error);
+                isRecording = false;
+                micBtn.classList.remove('recording');
+                micBtn.innerText = '🎤';
+                userInput.placeholder = '请点这里说话...';
+
+                if (event.error === 'no-speech') {
+                    addMessage('老人家，我没听清您说什么，请再说一遍好吗？', 'ai');
+                } else if (event.error === 'not-allowed') {
+                    addMessage('老人家，请允许浏览器使用麦克风，才能语音聊天哦。', 'ai');
+                }
+            };
+        }
+
+        function toggleVoiceInput() {
+            if (!recognition) {
+                addMessage('老人家，您的浏览器不支持语音输入，请使用Chrome浏览器试试。', 'ai');
+                return;
+            }
+
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        }
+    </script>
+
+</body>
+
+</html>

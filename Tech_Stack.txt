@@ -1,0 +1,28 @@
+Project: SilverCompanion (智护银龄)
+Role: Agile Mentor Configuration
+Last Updated: 2025-12-18
+
+[Core Architecture]
+Type: Monolithic Modular (Frontend + Backend within same repo for ease of submission)
+OS Compatibility: Windows 11 (Verified)
+
+[Backend]
+Language: Python 3.9+
+Framework: FastAPI (v0.100+) - High perf, auto-swagger docs.
+AI SDK: Aliyun Bailian SDK (openai compliant)
+Dependency Manager: pip (requirements.txt)
+
+[Frontend]
+Framework: Vue 3 (Script Setup)
+Build Tool: Vite - Ultra fast startup.
+UI Library: Tailwind CSS - Utility first, easy for "Big Font" (適老化) styling.
+HTTP Client: Axios
+
+[Database]
+Engine: SQLite 3
+Path: ./backend/silver.db
+ORM: SQLAlchemy (Synchronous for simplicity in teaching) or SQLModel
+
+[Dev Tools]
+Editor: VS Code (Recommended)
+Version Control: Git

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SilverCompanion v2.0 期末汇报演示文稿</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --accent: #f43f5e;
+            --bg-blur: rgba(255, 255, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.2);
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --glass: rgba(255, 255, 255, 0.75);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'PingFang SC', sans-serif;
+        }
+
+        body {
+            background: #0f172a url('presentation_bg.png') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .presentation-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Top Progress Bar */
+        .progress-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Slides Wrapper */
+        .slides-wrapper {
+            flex: 1;
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        /* Glass Content Card */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 2rem;
+            padding: 4rem;
+            width: 90%;
+            max-width: 1200px;
+            height: 80%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 1.5rem;
+        }
+
+        .slide-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+        }
+
+        .slide-content {
+            font-size: 1.5rem;
+            line-height: 1.8;
+            color: #334155;
+            flex: 1;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-item {
+            opacity: 0;
+        }
+
+        .slide.active .animate-item {
+            animation: fadeInUp 0.8s forwards;
+        }
+
+        /* Controls */
+        .controls {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 1000;
+        }
+
+        .control-btn {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--primary);
+        }
+
+        .control-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Specific Slide Styling */
+        .cover-content {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .cover-title {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cover-subtitle {
+            font-size: 2rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 3rem;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .feature-icon {
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem;
+            border-radius: 0.8rem;
+        }
+
+        .feature-text h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-text p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        .tech-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--primary-light);
+            color: white;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        /* Navigation Tooltip */
+        .nav-hint {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="presentation-container">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="slides-wrapper" id="slidesWrapper">
+            <!-- Slide 1: Cover -->
+            <section class="slide active" id="slide1">
+                <div class="glass-card cover-content">
+                    <div class="animate-item" style="animation-delay: 0.1s;">
+                        <h1 class="slide-title cover-title">智守银夕</h1>
+                        <p class="cover-subtitle">基于“15分钟生活圈”的社区适老化智慧助理 v2.0</p>
+                        <div style="font-size: 1.2rem; color: var(--text-muted);">
+                            上海杉达学院 人工智能基础与实践 期末汇报<br>
+                            汇报人：陈露 (组长) | 2025.12.29
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 2: Pain Points -->
+            <section class="slide" id="slide2">
+                <div class="glass-card">
+                    <h2 class="slide-title animate-item" style="animation-delay: 0.1s;">老龄化社区的现实痛点</h2>
+                    <div class="slide-content animate-item" style="animation-delay: 0.3s;">
+                        <div class="grid-layout">
+                            <div class="feature-card">
+                                <div class="feature-icon"><i data-lucide="users"></i></div>
+                                <div class="feature-text">
+                                    <h3>庞大的人口基数</h3>
+                                    <p>上海户籍 60岁+ 老人达 600万。其中 80岁+ 高龄老人近 86万，纯老家庭剧增。</p>
+                                </div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon"><i data-lucide="phone-off"></i></div>
+                                <div class="feature-text">
+                                    <h3>“最后一米”缺口</h3>
+                                    <p>15分钟生活圈基础设施成熟，但社区服务人力紧缺，老人面临健康咨询难、响应慢。</p>
+                                </div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon"><i data-lucide="zap-off"></i></div>
+                                <div class="feature-text">
+                                    <h3>数字鸿沟焦虑</h3>
+                                    <p>现有的 App 操作复杂，老人“看不太清、听不太准、记不太住”，急需极简交互。</p>
+                                </div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon"><i data-lucide="heart-pulse"></i></div>
+                                <div class="feature-text">
+                                    <h3>健康预警缺失</h3>
+                                    <p>独居老人突发身体不适时，缺乏有效、实时的初步智能指导与紧急求助通道。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 3: Solution -->
+            <section class="slide" id="slide3">
+                <div class="glass-card">
+                    <h2 class="slide-title animate-item" style="animation-delay: 0.1s;">解决方案：SilverCompanion</h2>
+                    <div class="slide-content animate-item" style="animation-delay: 0.3s;">
+                        <p style="font-size: 1.8rem; font-weight: 600; color: var(--primary); margin-bottom: 2rem;">让 AI
+                            成为有温度的“金牌社工小张”</p>
+                        <div class="grid-layout">
+                            <ul>
+                                <li><strong>极简对话</strong>：直接语音/文字交互，无多级菜单困扰。</li>
+                                <li><strong>专业知识库</strong>：上海本地养老政策 + 权威健康指南。</li>
+                                <li><strong>亲切人设</strong>：以晚辈姿态共情安抚，再给建议。</li>
+                            </ul>
+                            <div
+                                style="background: rgba(255,255,255,0.3); border-radius: 1rem; padding: 1rem; display: flex; align-items: center; justify-content: center;">
+                                <img src="silver_home.png"
+                                    style="max-width: 100%; border-radius: 0.5rem; box-shadow: 0 10px 20px rgba(0,0,0,0.1);"
+                                    alt="适老化界面">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 4: Tech Architecture -->
+            <section class="slide" id="slide4">
+                <div class="glass-card">
+                    <h2 class="slide-title animate-item" style="animation-delay: 0.1s;">技术架构：多路路由与 RAG-Lite</h2>
+                    <div class="slide-content animate-item" style="animation-delay: 0.3s;">
+                        <div class="grid-layout">
+                            <div>
+                                <h3>分布式双路路由</h3>
+                                <p>线路 A：阿里云百炼 Qwen-Max (国产旗舰)</p>
+                                <p>线路 B：OpenRouter Llama 3.3 70B (开源领先)</p>
+                                <p>线路 C：Mock 模式 (100% 演示可用性)</p>
+                                <div style="margin-top: 1rem;">
+                                    <span class="tech-badge">FastAPI</span>
+                                    <span class="tech-badge">Python</span>
+                                    <span class="tech-badge">Axios</span>
+                                </div>
+                            </div>
+                            <div style="border-left: 2px dashed var(--border); padding-left: 2rem;">
+                                <h3>RAG-Lite 知识增强</h3>
+                                <p>动态注入上海地方法规与健康指南片段。</p>
+                                <p><strong>v2.0 优化：</strong> 历史上下文存储，支持多轮对话逻辑。</p>
+                                <p><strong>响应统计：</strong> 精确到毫秒级的响应耗时监控日志。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 5: v2.0 New Features -->
+            <section class="slide" id="slide5">
+                <div class="glass-card">
+                    <h2 class="slide-title animate-item" style="animation-delay: 0.1s;">v2.0 里程碑升级</h2>
+                    <div class="slide-content animate-item" style="animation-delay: 0.3s;">
+                        <div class="grid-layout" style="grid-template-columns: repeat(3, 1fr);">
+                            <div class="feature-card" style="flex-direction: column; text-align: center;">
+                                <div class="feature-icon" style="margin: 0 auto 1rem;"><i
+                                        data-lucide="alert-triangle"></i></div>
+                                <h3>紧急关键词检测</h3>
+                                <p>识别“胸闷/不舒服”，最高优先级拦截，引导拨打120。</p>
+                            </div>
+                            <div class="feature-card" style="flex-direction: column; text-align: center;">
+                                <div class="feature-icon" style="margin: 0 auto 1rem;"><i data-lucide="type"></i></div>
+                                <h3>打字机模拟动画</h3>
+                                <p>模拟真人逐字输出（25ms/字），缓解老人等待焦虑。</p>
+                            </div>
+                            <div class="feature-card" style="flex-direction: column; text-align: center;">
+                                <div class="feature-icon" style="margin: 0 auto 1rem;"><i data-lucide="tag"></i></div>
+                                <h3>动态建议标签</h3>
+                                <p>快捷提问按钮随 AI 回复内容智能更新，引导深度交流。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 6: Demo -->
+            <section class="slide" id="slide6">
+                <div class="glass-card">
+                    <h2 class="slide-title animate-item" style="animation-delay: 0.1s;">核心功能演示：政策与健康</h2>
+                    <div class="slide-content animate-item" style="animation-delay: 0.3s;">
+                        <div class="grid-layout">
+                            <div class="feature-card" style="align-items: center;">
+                                <img src="silver_chat.png" style="width: 120px; border-radius: 0.5rem;" alt="对话">
+                                <div>
+                                    <h3>政策通：解读长护险</h3>
+                                    <p>准确调取 2025年最新养老补贴标准，用大白话讲解办理材料。</p>
+                                </div>
+                            </div>
+                            <div class="feature-card" style="align-items: center;">
+                                <img src="silver_health.png" style="width: 120px; border-radius: 0.5rem;" alt="健康">
+                                <div>
+                                    <h3>健康哨兵：饮食建议</h3>
+                                    <p>基于指南提供高血压日常饮食建议，严控不提供处方药的安全红线。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            style="margin-top: 2rem; background: var(--bg-blur); border-radius: 1rem; padding: 1.5rem; text-align: center;">
+                            <i data-lucide="shield-check" style="color: green; vertical-align: middle;"></i>
+                            <span
+                                style="font-weight: 600; margin-left: 0.5rem;">安全性验证：检测到报警词，“小张”会立即要求老人放下手机拨打120。</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 7: Validation -->
+            <section class="slide" id="slide7">
+                <div class="glass-card">
+                    <h2 class="slide-title animate-item" style="animation-delay: 0.1s;">测试验证：鲁棒性与性能</h2>
+                    <div class="slide-content animate-item" style="animation-delay: 0.3s;">
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 2rem;">
+                            <tr style="border-bottom: 2px solid var(--border);">
+                                <th style="text-align: left; padding: 1rem;">测试场景</th>
+                                <th style="padding: 1rem;">结果</th>
+                                <th style="text-align: left; padding: 1rem;">备注</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 1rem;">空输入/超长/特殊字符</td>
+                                <td style="text-align: center; color: green; font-weight: bold;">PASS</td>
+                                <td style="padding: 1rem;">系统稳定，正确触发兜底响应</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 1rem;">快速连击 (Spam Sending)</td>
+                                <td style="text-align: center; color: green; font-weight: bold;">PASS</td>
+                                <td style="padding: 1rem;">单条处理机制生效，无压力</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 1rem;">多重报警词拦截</td>
+                                <td style="text-align: center; color: green; font-weight: bold;">PASS</td>
+                                <td style="padding: 1rem;">优先级逻辑正常，一触即发</td>
+                            </tr>
+                        </table>
+                        <div class="grid-layout">
+                            <div style="text-align: center;">
+                                <div style="font-size: 3rem; font-weight: 800; color: var(--primary);">92%</div>
+                                <p>政策回答准确率</p>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 3rem; font-weight: 800; color: var(--primary);">&lt;1.5s</div>
+                                <p>平均首字生成时间</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 8: Ethics -->
+            <section class="slide" id="slide8">
+                <div class="glass-card">
+                    <h2 class="slide-title animate-item" style="animation-delay: 0.1s;">伦理合规与设计红线</h2>
+                    <div class="slide-content animate-item" style="animation-delay: 0.3s;">
+                        <div class="grid-layout">
+                            <div class="feature-card">
+                                <i data-lucide="eye-off" class="feature-icon"></i>
+                                <div>
+                                    <h3>隐私脱敏</h3>
+                                    <p>不要求、不存储任何真实姓名、证件号或敏感病史，确保老人隐私安全。</p>
+                                </div>
+                            </div>
+                            <div class="feature-card">
+                                <i data-lucide="scale" class="feature-icon"></i>
+                                <div>
+                                    <h3>结果可解释性</h3>
+                                    <p>所有建议明确引用数据源（如《膳食指南》），减少 AI 幻觉带来的风险。</p>
+                                </div>
+                            </div>
+                            <div class="feature-card">
+                                <i data-lucide="info" class="feature-icon"></i>
+                                <div>
+                                    <h3>知情同意</h3>
+                                    <p>首次启动即告知“数字助理”身份，明确 AI 与专业医疗服务的边界。</p>
+                                </div>
+                            </div>
+                            <div class="feature-card">
+                                <i data-lucide="ban" class="feature-icon"></i>
+                                <div>
+                                    <h3>无消费倾向</h3>
+                                    <p>严控保健品推荐，仅提供中立建议，防止老人产生不当消费。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 9: Team -->
+            <section class="slide" id="slide9">
+                <div class="glass-card">
+                    <h2 class="slide-title animate-item" style="animation-delay: 0.1s;">跨学科团队贡献</h2>
+                    <div class="slide-content animate-item" style="animation-delay: 0.3s;">
+                        <div class="grid-layout" style="grid-template-columns: 1fr 1fr 1fr;">
+                            <div style="text-align: center; padding: 1rem;">
+                                <div
+                                    style="width: 80px; height: 80px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-weight: 800; font-size: 2rem;">
+                                    陈</div>
+                                <h4>陈露 (组长)</h4>
+                                <p style="font-size: 0.9rem;">架构设计 / v2.0 优化</p>
+                            </div>
+                            <div style="text-align: center; padding: 1rem;">
+                                <div
+                                    style="width: 80px; height: 80px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-weight: 800; font-size: 2rem;">
+                                    黄</div>
+                                <h4>黄嘉琳 (顾问)</h4>
+                                <p style="font-size: 0.9rem;">康复医学知识库校验</p>
+                            </div>
+                            <div style="text-align: center; padding: 1rem;">
+                                <div
+                                    style="width: 80px; height: 80px; background: #8b5cf6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-weight: 800; font-size: 2rem;">
+                                    孙</div>
+                                <h4>孙嘉宁 (后端)</h4>
+                                <p style="font-size: 0.9rem;">API 调试与逻辑配置</p>
+                            </div>
+                        </div>
+                        <p style="text-align: center; margin-top: 2rem; color: var(--text-muted);">全体成员：薛尉廷、高子伟、袁帅、时铭阳
+                            共同完成</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 10: Conclusion -->
+            <section class="slide" id="slide10">
+                <div class="glass-card cover-content">
+                    <h2 class="slide-title animate-item" style="animation-delay: 0.1s;">科技致温 守护银夕</h2>
+                    <div class="slide-content animate-item" style="animation-delay: 0.3s;">
+                        <p style="font-size: 2rem; margin-bottom: 2rem;">SilverCompanion v2.0 已准备就绪</p>
+                        <p style="color: var(--text-muted);">感谢各位评审老师的聆听！</p>
+                    </div>
+                    <div class="animate-item" style="animation-delay: 0.5s; margin-top: 2rem;">
+                        <span class="tech-badge">AI应用与实践</span>
+                        <span class="tech-badge">上海杉达学院</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="nav-hint">使用键盘 [← / →] 或 [空格] 翻页</div>
+
+        <div class="controls">
+            <div class="control-btn" id="prevBtn"><i data-lucide="chevron-left"></i></div>
+            <div class="control-btn" id="nextBtn"><i data-lucide="chevron-right"></i></div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const wrapper = document.getElementById('slidesWrapper');
+        const progressBar = document.getElementById('progressBar');
+
+        function updateSlide() {
+            wrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                if (currentSlide < totalSlides - 1) {
+                    currentSlide++;
+                    updateSlide();
+                }
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateSlide();
+                }
+            }
+        });
+
+        // Initialize progress bar width
+        updateSlide();
+    </script>
+
+</body>
+
+</html>
