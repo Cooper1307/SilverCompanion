@@ -1,5 +1,4 @@
-\documentclass[UTF8]{article}
-\usepackage{xeCJK}
+\documentclass[UTF8,zihao=-4,scheme=chinese]{ctexart}
 \usepackage{geometry}
 \usepackage{titlesec}
 \usepackage{setspace}
@@ -12,28 +11,23 @@
 % 页面设置: A4纸, 上2.5cm, 下2.5cm, 左3.1cm, 右3.1cm
 \geometry{a4paper, top=2.5cm, bottom=2.5cm, left=3.1cm, right=3.1cm}
 
-% 字体设置
-% 注: Overleaf 环境下请使用 XeLaTeX 编译器
-\setCJKmainfont{FangSong} % 正文及一级标题使用仿宋
-\setCJKfamilyfont{shhei}{SimHei} % 定义黑体族
-\newcommand{\hei}{\CJKfamily{shhei}}
-
 % 行间距: 1.3倍
 \setstretch{1.3}
 
 % 标题格式设置
-% 大标题: 黑体、三号、加粗
-\title{\hei\bfseries\zihao{3} 上海杉达学院人工智能通识教育课程项目实践报告}
-\date{}
+% 大标题: 三号, 加粗. ctex 下使用 \heiti
+\newcommand{\mainboundtitle}{\bfseries\heiti\zihao{3}}
 
-% 一级标题: 仿宋、小三
-\titleformat{\section}{\zihao{-3}\bfseries\CJKfamily{FangSong}}{\thesection}{1em}{}
-% 二级标题: 仿宋、下同正文或加粗
-\titleformat{\subsection}{\zihao{4}\bfseries\CJKfamily{FangSong}}{\thesubsection}{1em}{}
+% 一级标题: 仿宋(或默认), 小三. ctex 下建议使用 \sifang
+\titleformat{\section}{\zihao{-3}\bfseries}{\thesection}{1em}{}
+% 二级标题: 小四, 加粗
+\titleformat{\subsection}{\zihao{4}\bfseries}{\thesubsection}{1em}{}
 
 \begin{document}
 
-\maketitle
+\begin{center}
+    {\mainboundtitle 上海杉达学院人工智能通识教育课程项目实践报告}
+\end{center}
 
 \vspace{-2cm}
 
@@ -48,7 +42,7 @@
 \centering
 \begin{tabular}{|m{4cm}|m{8cm}|}
 \hline
-\hei\bfseries 项目信息 & \hei\bfseries 内容 \\ \hline
+\bfseries 项目信息 & \bfseries 内容 \\ \hline
 项目名称 & 智守银夕 - 基于“15分钟生活圈”的社区适老化智慧助理 \\ \hline
 智能体名 & 银龄小助手 (SilverCompanion) \\ \hline
 项目负责人 & 陈露 \\ \hline
@@ -94,7 +88,7 @@
 \zihao{-4}
 \begin{tabular}{|p{3cm}|p{5cm}|p{5cm}|}
 \hline
-\hei 需求类型 & \hei 具体内容描述 & \hei 关键挑战与考量 \\ \hline
+ 需求类型 &  具体内容描述 &  关键挑战与考量 \\ \hline
 业务目标 & 打造“懂医疗、懂政策、懂老人”的高质量智能体。 & 重点在于如何确保AI对上海各区差异化养老政策回答准确？ \\ \hline
 用户需求 & 大字版界面与极简语音操作，降低数字门槛。 & 如何解决老人对“AI生成内容”的天然不信任感？ \\ \hline
 数据需求 & 输入：健康问答、政策文件；输出：有温度的建议。 & 如何收集敏感公共数据同时保护用户隐私？ \\ \hline
