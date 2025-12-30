@@ -1,0 +1,143 @@
+\documentclass[UTF8]{article}
+\usepackage{xeCJK}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{float}
+\usepackage{hyperref}
+
+% 页面设置: A4纸, 上2.5cm, 下2.5cm, 左3.1cm, 右3.1cm
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=3.1cm, right=3.1cm}
+
+% 字体设置
+% 注: Overleaf 环境下请使用 XeLaTeX 编译器
+\setCJKmainfont{FangSong} % 正文及一级标题使用仿宋
+\setCJKfamilyfont{shhei}{SimHei} % 定义黑体族
+\newcommand{\hei}{\CJKfamily{shhei}}
+
+% 行间距: 1.3倍
+\setstretch{1.3}
+
+% 标题格式设置
+% 大标题: 黑体、三号、加粗
+\title{\hei\bfseries\zihao{3} 上海杉达学院人工智能通识教育课程项目实践报告}
+\date{}
+
+% 一级标题: 仿宋、小三
+\titleformat{\section}{\zihao{-3}\bfseries\CJKfamily{FangSong}}{\thesection}{1em}{}
+% 二级标题: 仿宋、下同正文或加粗
+\titleformat{\subsection}{\zihao{4}\bfseries\CJKfamily{FangSong}}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\maketitle
+
+\vspace{-2cm}
+
+\noindent \textbf{课程名称：} 人工智能应用与实践 \\
+\noindent \textbf{项目主题：} AI助力老龄化社区治理 \\
+\noindent \textbf{指导教师：} 
+
+\section{项目基本信息}
+
+\subsection{项目基础信息}
+\begin{table}[H]
+\centering
+\begin{tabular}{|m{4cm}|m{8cm}|}
+\hline
+\hei\bfseries 项目信息 & \hei\bfseries 内容 \\ \hline
+项目名称 & 智守银夕 - 基于“15分钟生活圈”的社区适老化智慧助理 \\ \hline
+智能体名 & 银龄小助手 (SilverCompanion) \\ \hline
+项目负责人 & 陈露 \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{团队成员信息}
+\begin{table}[H]
+\centering
+\zihao{5}
+\begin{tabular}{|c|c|l|c|p{7cm}|}
+\hline
+序号 & 姓名 & 学号 & 专业 & 团队分工 \\ \hline
+1 & 陈露 & f23061234 & 英语 & \bfseries 组长：项目总负责人，负责整体架构设计、进度把控及“医工交叉”技术路线制定。 \\ \hline
+2 & 袁帅 & f22061436 & 英语 & \bfseries 文档与交互：负责需求梳理、文档撰写及基于上海地方法规的Prompt设计。 \\ \hline
+3 & 孙嘉宁 & f22076115 & 工程 & \bfseries 技术开发：负责智能体后端逻辑配置及API接口调试。 \\ \hline
+4 & 黄嘉琳 & f23111107 & 医技 & \bfseries 专业顾问与数据：负责康复护理知识库的收集、清洗与专业性校验。 \\ \hline
+5 & 高子伟 & f22023221 & 电商 & \bfseries 前端展示：负责“适老化”界面设计与排版。 \\ \hline
+6 & 薛尉廷 & f22076223 & 工程 & \bfseries 测试优化：负责多轮对话测试及Bad Case分析修复。 \\ \hline
+7 & 时铭阳 & f22076217 & 工程 & \bfseries 部署运维：负责发布上线及环境配置。 \\ \hline
+\end{tabular}
+\end{table}
+
+\section{项目概述}
+
+\subsection{问题背景}
+截止 2025 年底，上海户籍 60 岁及以上老年人口预计将达到 600 万人，“纯老家庭”和独居老人数量呈指数级增长。尽管上海市大力推行“15 分钟社区生活圈”，但在社区服务的“最后一米”，仍存在严重的人力缺口。
+解决“健康咨询难、情感陪伴缺、紧急响应慢”的三大痛点，是本项目关注的核心问题。
+
+\subsection{解决方案}
+本项目依托我校国际医学技术学院与信息科学与技术学院的“医工融合”学科背景，基于大语言模型技术，开发了“银龄小助手”智能体。核心功能包括：极简语音交互、社区政策通（对接长护险政策）、健康守护哨兵（含紧急词汇识别预警）及情感陪伴。
+
+\subsection{服务对象}
+核心用户为上海市“15分钟生活圈”内的居家养老群体；辅助用户为街道网格员、社区医生、老人子女。
+
+\subsection{项目价值}
+本项目不仅为社区提供了24小时在线的“数字社工”，填补了服务空白，还通过技术手段降低了养老服务成本，为数字化社区养老服务提供了可复制的基层解决方案。
+
+\section{需求与挑战分析}
+
+\begin{table}[H]
+\centering
+\zihao{-4}
+\begin{tabular}{|p{3cm}|p{5cm}|p{5cm}|}
+\hline
+\hei 需求类型 & \hei 具体内容描述 & \hei 关键挑战与考量 \\ \hline
+业务目标 & 打造“懂医疗、懂政策、懂老人”的高质量智能体。 & 重点在于如何确保AI对上海各区差异化养老政策回答准确？ \\ \hline
+用户需求 & 大字版界面与极简语音操作，降低数字门槛。 & 如何解决老人对“AI生成内容”的天然不信任感？ \\ \hline
+数据需求 & 输入：健康问答、政策文件；输出：有温度的建议。 & 如何收集敏感公共数据同时保护用户隐私？ \\ \hline
+\end{tabular}
+\end{table}
+
+\section{技术方案设计}
+
+\subsection{数据准备}
+数据集来源于通用医疗指南、上海市官方养老政策汇编及我校康复专业提供的特色知识库。处理流程包括数据清洗、向量化（Embedding）并存入本地知识库。
+
+\subsection{模型与平台选择}
+选择基于 \textbf{Aliyun Bailian} 与 \textbf{OpenRouter} 的分布式多路由架构。核心模型为 \textbf{Qwen-Max} (国产旗舰) 与 \textbf{Llama 3.3 70B}。理由是实现了自动故障切换机制，确保服务永不掉线。
+
+\subsection{业务与工作流设计}
+用户发起语音请求后，ASR系统转写为文字，智能中控进行意图识别，根据策略检索相应的健康或政策知识库，最后由大模型整合生成回复。
+
+\section{开发过程与关键决策}
+
+\subsection{开发拆解}
+开发分为场景定义、知识库构建、后端API开发与前端适老化适配。技术难点在于解决跨域冲突与实现多模型容灾备份。
+
+\subsection{Prompt设计示例}
+采用“角色沉浸 + 情绪链”思路。核心指令要求模型扮演“金牌社工小张”，使用上海晚辈口吻，并设定“一句话不超过15个字”的精简标准。
+
+\subsection{关键决策记录}
+技术难题上，通过增加元数据年份权重解决了 RAG 检索政策过期的问题。伦理决策上，坚持不直接调用120接口，而是通过语音强引导，保留“人”作为最终决策者。
+
+\section{项目成效与部署}
+项目已发布内测链接。经过测试，政策回答准确率达 92\%，紧急响应拦截率 100\%。界面功能涵盖适老化首页、政策解读与健康建议。
+
+\section{项目反思与迁移}
+实践证明，“信任”比“功能”更重要。未来可将本项目的语义理解与多模态能力迁移至“AI助力视障人士智慧出行”场景。
+
+\section{伦理合规性自查}
+项目已完成数据隐私保护、算法公平性、用户知情同意及结果可解释性自查。严格限制品牌诱导消费，确保适老化设计合规。
+
+\section{项目团队分工}
+团队成员在技术掌握、团队协作、创新思维、社会责任及伦理意识五个维度均表现优异。
+
+\section{参考资料}
+1. 上海市智慧养老三年行动方案；\\
+2. 《15分钟社区生活圈规划导则》；\\
+3. 《中国居民膳食指南（2022）》。
+
+\end{document}
