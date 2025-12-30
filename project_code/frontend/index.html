@@ -252,6 +252,11 @@
             sendMessage();
         }
 
+        // v2.1: 动态 API 基础路径配置 (方便部署)
+        const CONFIG = {
+            API_BASE_URL: "http://localhost:8001" // 部署到云端后，请修改此处的域名
+        };
+
         async function sendMessage() {
             const message = userInput.value.trim();
             if (!message) return;
@@ -261,7 +266,7 @@
             statusDiv.style.display = 'block';
 
             try {
-                const response = await axios.post('http://localhost:8001/chat', {
+                const response = await axios.post(`${CONFIG.API_BASE_URL}/chat`, {
                     message: message,
                     user_id: SESSION_ID  // v2.1: 使用唯一 Session ID
                 });
